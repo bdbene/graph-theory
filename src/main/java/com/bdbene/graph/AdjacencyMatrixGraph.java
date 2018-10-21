@@ -1,10 +1,12 @@
 package com.bdbene.graph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /*
  * A graph structure that uses an adjacency matrix to represent a weighted, undirected graph.
- * Only one edge between any two vertices. Vertices are allowed to have edges to themselves.
+ * Only one edge between any two vertices is allowed. Vertices are allowed to have edges to themselves.
  * Negative weights are allowed, though weights of zero are assumed to mean an edge doesn't exist.
  */
 public class AdjacencyMatrixGraph implements Graph {
@@ -34,62 +36,108 @@ public class AdjacencyMatrixGraph implements Graph {
     }
 
     // Adds an edge between two existing vertices. If an edge already exists, it is overwritten.
+    public void addEdge(Edge edge) {
+        addEdge(edge.getFirst(), edge.getSecond(), edge.getWeight());
+    }
+
+    // Adds an edge between two existing vertices. If an edge already exists, it is overwritten.
     public void addEdge(int vertexA, int vertexB, int weight) {
-        checkVertexExistance(vertexA, vertexB);
+        checkEdgeValidity(vertexA, vertexB);
 
         matrix[vertexA][vertexB] = weight;
         matrix[vertexB][vertexA] = weight;
     }
 
     // Removes an edge from the graph. If no edge exists, nothing happens.
+    public void removeEdge(Edge edge) {
+        removeEdge(edge.getFirst(), edge.getSecond());
+    }
+
+    // Removes an edge from the graph. If no edge exists, nothing happens.
     public void removeEdge(int vertexA, int vertexB) {
-        checkVertexExistance(vertexA, vertexB);
+        checkEdgeValidity(vertexA, vertexB);
 
         matrix[vertexA][vertexB] = 0;
         matrix[vertexB][vertexA] = 0;
     }
 
+    // Returns the amount of vertices. 
     public int vertexCount() {
         return matrix.length;
     }
 
-    public ArrayList<Integer> getEdges(int vertex) {
+    // Returns the list of edges of a vertex.
+    public List<Edge> getEdges(int vertex) {
         int height = matrix.length;
 
-        if (vertex >= height) {
-            throw new IndexOutOfBoundsException("Vertex must be in the graph.");
-        }
+        checkVertexValidity(vertex);
 
-        ArrayList<Integer> ret = new ArrayList<>(height);
+        List<Edge> ret = new ArrayList<>(height);
 
         for (int i = 0; i < height; i++) {
-            Integer val = matrix[vertex][i];
+            int weight = matrix[vertex][i];
 
-            if (val != 0) {
-                ret.add(i);
+            if (weight != 0) {
+                ret.add(new Edge(vertex, i, weight));
             }
         }
 
         return ret;
     }
 
+    // Check if an edge between two vertices exists.
+    public boolean edgeExists(Edge edge) {
+        return edgeExists(edge.getFirst(), edge.getSecond());
+    }
+
+    // Check if an edge between two vertices exists.
     public boolean edgeExists(int vertexA, int vertexB) {
-        checkVertexExistance(vertexA, vertexB);
+        checkEdgeValidity(vertexA, vertexB);
 
         return matrix[vertexA][vertexB] != 0;
     }
 
+    // Get the weight of an edge.
+    public int edgeWeight(Edge edge) {
+        return edgeWeight(edge.getFirst(), edge.getSecond());
+    }
+
+    // Get the weight of an edge.
     public int edgeWeight(int vertexA, int vertexB) {
-        checkVertexExistance(vertexA, vertexB);
+        checkEdgeValidity(vertexA, vertexB);
 
         return matrix[vertexA][vertexB];
     }
 
-    private void checkVertexExistance(int x, int y) {
+    // Returns the degree of a vertex, which is the amount of edges the vertex has.
+    public int degree(int vertex) {
+        int height = matrix.length;
+        int degree = 0;
+        
+        for (int i = 0; i < height; i++) {
+            if (edgeExists(vertex, i)) {
+                degree++;
+                
+                if (vertex == i) {
+                    degree++;
+                }
+            }
+        }
+
+        return degree;
+    }
+
+    private void checkVertexValidity(int x) {
+        if (x >= matrix.length) {
+            throw new IndexOutOfBoundsException("Vertex does not exist.");
+        }
+    }
+
+    private void checkEdgeValidity(int x, int y) {
         int height = matrix.length;
 
         if (x >= height || y >= height) {
-            throw new IndexOutOfBoundsException("Cannot remove edge if both vertices are not in the graph.");
+            throw new IndexOutOfBoundsException("Edge must be between two existing vertices.");
         }
     }
 }

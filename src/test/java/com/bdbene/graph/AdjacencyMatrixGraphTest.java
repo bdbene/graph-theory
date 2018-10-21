@@ -84,20 +84,52 @@ public class AdjacencyMatrixGraphTest {
     @Test
     public void TestGetEdgeList_AllEdgesForVertexRetreived() {
         AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(10);
-        graph.addEdge(2, 6, 20);
-        graph.addEdge(3, 8, -15);
-        graph.addEdge(2, 4, -2);
-        graph.addEdge(2, 9, 1);
-        graph.addEdge(2, 2, 6);
-        graph.addEdge(2, 1, 9);
-        graph.removeEdge(2, 1);
+        Edge edge1 = new Edge(2, 6, 20);
+        Edge edge2 = new Edge(3, 8, -15);
+        Edge edge3 = new Edge(2, 4, -2);
+        Edge edge4 = new Edge(2, 9, 1);
+        Edge edge5 = new Edge(2, 2, 6);
+        Edge edge6 = new Edge(2, 1, 9);
 
-        List<Integer> edges = graph.getEdges(2);
+
+        graph.addEdge(edge1);
+        graph.addEdge(edge2);
+        graph.addEdge(edge3);
+        graph.addEdge(edge4);
+        graph.addEdge(edge5);
+        graph.addEdge(edge6);
+        graph.removeEdge(edge6);
+
+        List<Edge> edges = graph.getEdges(2);
 
         assertEquals(4, edges.size());
-        assertTrue(edges.contains(6));
-        assertTrue(edges.contains(4));
-        assertTrue(edges.contains(9));
-        assertTrue(edges.contains(2));
+        assertTrue(edges.contains(edge1));
+        assertTrue(edges.contains(edge3));
+        assertTrue(edges.contains(edge4));
+        assertTrue(edges.contains(edge5));
+    }
+
+    @Test
+    public void TestGetVertexDegree_CorrectDegreeReturned() {
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(20);
+        graph.addEdge(5, 7, 20);
+        graph.addEdge(5, 19, -3);
+        graph.addEdge(4, 5, 3);
+        graph.addEdge(0, 5, 2);
+        graph.addEdge(3, 4, 20);
+        graph.removeEdge(0, 3);
+
+        int degree = graph.degree(5);
+
+        assertEquals(4, degree);
+    }
+
+    public void TestGetVertexDegreeConnectedToSelf_EdgeCountedTwice() {
+        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(20);
+        graph.addEdge(5, 5, 20);
+
+        int degree = graph.degree(5);
+
+        assertEquals(2, degree);
     }
 }
