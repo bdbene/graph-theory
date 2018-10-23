@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // Representation of a weighted, undirected edge between two vertices. 
-class Edge {
+public class Edge {
     @Getter
     @Setter
     private int first;
@@ -36,5 +36,9 @@ class Edge {
         } else {
             return false;
         }
+    }
+
+    public int compareTo(Edge other) {
+        return weight - other.getWeight();
     }
 }
