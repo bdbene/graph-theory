@@ -3,6 +3,7 @@ package com.bdbene.graph;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
  * A graph structure that uses an adjacency matrix to represent a weighted, undirected graph.
@@ -83,6 +84,33 @@ public class AdjacencyMatrixGraph implements Graph {
         }
 
         return ret;
+    }
+
+    public List<Edge> getAllEdges() {
+        int vertexCount = matrix.length;
+        List<Edge> edges = new ArrayList<>(vertexCount);
+        Set<Edge> visited = new HashSet<>(vertexCount);
+
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                int weight = matrix[i][j];
+
+                if (weight == 0) {
+                    continue;
+                }
+
+                Edge edge = new Edge(i, j, weight);
+
+                if (visited.contains(edge)) {
+                    continue;
+                }
+
+                edges.add(edge);
+                visited.add(edge);
+            }
+        }
+
+        return edges;
     }
 
     // Check if an edge between two vertices exists.

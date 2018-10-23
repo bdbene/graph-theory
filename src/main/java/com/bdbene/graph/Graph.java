@@ -8,6 +8,7 @@ public interface Graph {
     public void removeEdge(Edge edge);
     public void removeEdge(int x, int y);
     public int vertexCount();
+    public List<Edge> getAllEdges();
     public List<Edge> getEdges(int x);
     public boolean edgeExists(Edge edge);
     public boolean edgeExists(int x, int y);
